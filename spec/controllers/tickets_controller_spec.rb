@@ -33,6 +33,16 @@ describe TicketsController do
       it { body.sample.should be_kind_of Hash }
       it { body.sample.should include("id","msisdn","seat","status","ticket_no","description") }
 
+      context "with status param set to 'waiting'" do
+        before { get :index, { status: "waiting", :format => :json } }
+        let(:body) { JSON.parse(response.body) }
+
+        subject { body }
+
+        its(:count) { should eq 5 }
+        it { body.each { |i| i['status'].should eq "waiting" } }
+      end
+
       context "with status param set to 'pending'" do
         before { get :index, { status: "pending", :format => :json } }
         let(:body) { JSON.parse(response.body) }
