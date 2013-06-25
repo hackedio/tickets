@@ -54,4 +54,5 @@ describe Ticket do
     end
   end
 
+  after(:all) { Ticket.destroy_all }
 end
