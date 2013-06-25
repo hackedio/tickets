@@ -4,8 +4,12 @@ describe TicketsController do
 
   describe "GET index" do
 
-    let(:ticket) { create(:ticket) }
-    before { ticket }
+    before do
+      5.times { create(:ticket) }
+      3.times { create(:ticket, status: "pending") }
+      2.times { create(:ticket, status: "complete") }
+    end
+    let(:tickets) { Ticket.all }
 
     context "when html" do
       before { get :index }
@@ -14,7 +18,7 @@ describe TicketsController do
       its(:status) { should be 200 }
       it { should render_template("index") }
       it "assigns @tickets" do
-        expect(assigns(:tickets)).to eq([ticket])
+        expect(assigns(:tickets)).to eq(tickets)
       end
     end
 
@@ -28,6 +32,26 @@ describe TicketsController do
       it { body.should be_kind_of Array }
       it { body.sample.should be_kind_of Hash }
       it { body.sample.should include("id","msisdn","seat","status","ticket_no","description") }
+
+      context "with status param set to 'pending'" do
+        before { get :index, { status: "pending", :format => :json } }
+        let(:body) { JSON.parse(response.body) }
+
+        subject { body }
+
+        its(:count) { should eq 3 }
+        it { body.each { |i| i['status'].should eq "pending" } }
+      end
+
+      context "with status param set to 'complete'" do
+        before { get :index, { status: "complete", :format => :json } }
+        let(:body) { JSON.parse(response.body) }
+
+        subject { body }
+
+        its(:count) { should eq 2 }
+        it { body.each { |i| i['status'].should eq "complete" } }
+      end
     end
   end
 end
