@@ -103,5 +103,61 @@ describe TicketsController do
     end
   end
 
+  describe "#create" do
+    let(:valid_attributes) do
+      { new_ticket: { msisdn: "07712345678",
+                      seat: "4B",
+                      description: "Help with Heroku!?" } }
+    end
+    let(:invalid_msisdn) do
+      { new_ticket: { msisdn: "0771234567",
+                      seat: "4B",
+                      description: "Help with Heroku!?" } }
+    end
+
+    context "when request sent with correct data" do
+      let(:create_new_ticket) do
+        post :create, valid_attributes, :format => :json
+      end
+      it "should create new ticket record" do
+        expect { create_new_ticket }.to change { Ticket.count }.by(1)
+        Ticket.last.seat.should eq "4B"
+        Ticket.last.description.should eq "Help with Heroku!?"
+      end
+    end
+
+    context "when request sent with missing data" do
+      let(:create_new_ticket) do
+        post :create, { new_ticket: { description: "Help with Heroku!?" } }, :format => :json
+      end
+      it "should not create new ticket record" do
+        expect { create_new_ticket }.to_not change { Ticket.count }
+      end
+    end
+
+    context "when request sent with invalid msisdn" do
+      let(:create_new_ticket) do
+        post :create, invalid_msisdn, :format => :json
+      end
+      it "should not create new ticket record" do
+        expect { create_new_ticket }.to_not change { Ticket.count }
+      end
+    end
+
+    context "when request has completed" do
+      context "without error" do
+        before { post :create, valid_attributes, :format => :json }
+        subject { response }
+        its(:body) { should include "new ticket created successfully." }
+      end
+
+      context "with error" do
+        before { post :create, invalid_msisdn, :format => :json }
+        subject { response }
+        its(:body) { should include "ticket was not created. check your params." }
+      end
+    end
+  end
+
   after(:all) { Ticket.destroy_all }
 end

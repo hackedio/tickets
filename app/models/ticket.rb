@@ -18,9 +18,11 @@ class Ticket < ActiveRecord::Base
   end
 
   def msisdn_is_valid?(msisdn)
-    msisdn.sub!('0','44') if msisdn[0] == '0'
-    msisdn_regex = /\A(([4][4][7][4-5|7-9])(\d{8}))\Z/
-    return msisdn.match(msisdn_regex) unless msisdn.nil?
+    unless msisdn.nil?
+      msisdn.sub!('0','44') if msisdn[0] == '0'
+      msisdn_regex = /\A(([4][4][7][4-5|7-9])(\d{8}))\Z/
+      return msisdn.match(msisdn_regex)
+    end
     false
   end
 end

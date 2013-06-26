@@ -14,6 +14,18 @@ class TicketsController < ApplicationController
     end
   end
 
+  # POST /tickets
+  # POST /tickets.json
+  def create
+    new_ticket = Ticket.new(params[:new_ticket]) # name form "new_ticket"
+
+    if new_ticket.save
+      render json: {"notice"=>"new ticket created successfully."}
+    else
+      render json: {"alert"=>"ticket was not created. check your params."}
+    end
+  end
+
   # PUT /tickets/:id
   # PUT /tickets/:id.json
   def update
