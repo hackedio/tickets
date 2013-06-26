@@ -3,4 +3,5 @@ Tickets::Application.routes.draw do
 
   resources :tickets
   resources :groups
+  resources :users
 end
