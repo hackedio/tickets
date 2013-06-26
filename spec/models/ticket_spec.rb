@@ -1,6 +1,19 @@
 require 'spec_helper'
 
 describe Ticket do
+
+  context "with group association" do
+    before do
+      @group = create(:group, name:"geeks")
+      @ticket = create(:ticket, group_id: @group.id)
+    end
+
+    subject { @ticket.group }
+
+    it { should be_valid }
+    its(:name) { should eq "geeks" }
+  end
+
   context "when creating new record" do
     before { create(:group) }
     before { 2.times { create(:ticket) } }

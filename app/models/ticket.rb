@@ -1,6 +1,8 @@
 class Ticket < ActiveRecord::Base
   attr_accessible :ticket_no, :msisdn, :seat, :description, :status, :group_id
 
+  belongs_to :group
+
   before_create :increment_ticket_no
 
   validates :seat, :description, :group_id, :presence => true, allow_blank: false
