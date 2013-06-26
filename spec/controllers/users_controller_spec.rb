@@ -39,6 +39,37 @@ describe UsersController do
     end
   end
 
+  describe "#destroy" do
+      before { @user = create(:user) }
+
+      it "should delete user" do
+        expect{ delete :destroy, {id:@user.id} }.to change{ User.count }.by(-1)
+      end
+
+      context "when request correct" do
+        before do
+          @user = create(:user)
+          delete :destroy, {id:@user.id}
+        end
+
+        subject { response }
+
+        its(:body) { should include "user deleted successfully" }
+      end
+
+      context "when request not correct" do
+        before do
+          @user = create(:user)
+          delete :destroy, {id:-1}
+        end
+
+        subject { response }
+
+        its(:body) { should include "did not specify a valid id. no record deleted." }
+      end
+
+  end
+
   after(:all) { User.destroy_all }
 
 end
