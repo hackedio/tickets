@@ -18,9 +18,10 @@ class TicketsController < ApplicationController
   # PUT /tickets/:id.json
   def update
     ticket = Ticket.find(params[:id])
+    status = params[:status]
 
-    if params[:status] and ticket.update_attributes(status: params[:status])
-      render json: {"notice"=>"status updated successfully"}
+    if status and ticket.update_attributes(status: status)
+      render json: {"notice"=>"status updated successfully to '#{status}'"}
     else
       render json: {"alert"=>"status not updated. check params."}
     end

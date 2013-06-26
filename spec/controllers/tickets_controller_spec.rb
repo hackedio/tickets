@@ -77,15 +77,15 @@ describe TicketsController do
     end
 
     context "when updated" do
-      let(:update_request) { put :update, {id: @ticket.id, status: "pending"}, :format => :json  }
+      let(:update_request) { put :update, {id: @ticket.id, status: "resolved"}, :format => :json  }
       subject { ticket_status }
       it { should eq "waiting" }
       it "should update the status record in db" do
-        expect { update_request }.to change { ticket_status }.to("pending")
+        expect { update_request }.to change { ticket_status }.to("resolved")
       end
       it "returns correct response" do
         update_request
-        response.body.should include "status updated successfully"
+        response.body.should include "status updated successfully to 'resolved'"
       end
     end
 
@@ -94,7 +94,7 @@ describe TicketsController do
       subject { ticket_status }
       it { should eq "waiting" }
       it "should update the status record in db" do
-        expect { update_request }.to_not change { ticket_status }.to("pending")
+        expect { update_request }.to_not change { ticket_status }
       end
       it "returns correct response" do
         update_request
