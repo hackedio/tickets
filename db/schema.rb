@@ -11,7 +11,13 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130624120746) do
+ActiveRecord::Schema.define(:version => 20130626125438) do
+
+  create_table "groups", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "tickets", :force => true do |t|
     t.integer  "ticket_no"
@@ -21,6 +27,7 @@ ActiveRecord::Schema.define(:version => 20130624120746) do
     t.string   "status",      :default => "waiting", :null => false
     t.datetime "created_at",                         :null => false
     t.datetime "updated_at",                         :null => false
+    t.integer  "group_id"
   end
 
 end

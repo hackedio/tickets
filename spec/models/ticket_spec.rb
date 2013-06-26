@@ -2,7 +2,8 @@ require 'spec_helper'
 
 describe Ticket do
   context "when creating new record" do
-
+    let(:g_id) { Group.first.id }
+    before { create(:group) }
     before { 2.times { create(:ticket) } }
 
     subject { Ticket.last }
@@ -19,6 +20,12 @@ describe Ticket do
       expect do
         create(:ticket, msisdn:"", seat:"", description:"")
       end.to raise_error ActiveRecord::RecordInvalid
+    end
+
+    context "without group_id" do
+      it "raises a RecordInvalid error" do
+        expect { create(:ticket, group_id: nil) }.to raise_error ActiveRecord::RecordInvalid
+      end
     end
 
     context "with invalid msisdn field" do
