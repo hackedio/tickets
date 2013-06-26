@@ -32,4 +32,10 @@ describe User do
       Ticket.destroy_all
     end
   end
+
+  context "without group_id" do
+    it "should_not be_valid" do
+      expect{ create(:user, group_id: nil) }.to raise_error ActiveRecord::RecordInvalid
+    end
+  end
 end
