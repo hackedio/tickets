@@ -3,8 +3,7 @@ require 'spec_helper'
 describe TicketsController do
   before(:all) do
     5.times { create(:ticket) }
-    3.times { create(:ticket, status: "pending") }
-    2.times { create(:ticket, status: "complete") }
+    3.times { create(:ticket, status: "resolved") }
     @ticket = Ticket.first
   end
 
@@ -47,24 +46,14 @@ describe TicketsController do
         specify { body.each { |i| i['status'].should eq "waiting" } }
       end
 
-      context "with status param set to 'pending'" do
-        before { get :index, { status: "pending", :format => :json } }
+      context "with status param set to 'resolved'" do
+        before { get :index, { status: "resolved", :format => :json } }
         let(:body) { JSON.parse(response.body) }
 
         subject { body }
 
         its(:count) { should eq 3 }
-        specify { body.each { |i| i['status'].should eq "pending" } }
-      end
-
-      context "with status param set to 'complete'" do
-        before { get :index, { status: "complete", :format => :json } }
-        let(:body) { JSON.parse(response.body) }
-
-        subject { body }
-
-        its(:count) { should eq 2 }
-        specify { body.each { |i| i['status'].should eq "complete" } }
+        specify { body.each { |i| i['status'].should eq "resolved" } }
       end
     end
   end
