@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe Ticket do
   context "when creating new record" do
-    let(:g_id) { Group.first.id }
     before { create(:group) }
     before { 2.times { create(:ticket) } }
 
