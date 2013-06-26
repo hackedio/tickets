@@ -31,4 +31,18 @@ class UsersController < ApplicationController
       render json: { "alert"=>"did not specify a valid id. no record deleted." }
     end
   end
+
+  # PUT /users/:id
+  # PUT /users/:id.json
+  def update
+    user = User.find(params[:id])
+    name = params[:name] || user.name
+    msisdn = params[:msisdn] || user.msisdn
+
+    if user.update_attributes(name:name, msisdn:msisdn)
+      render json: {"notice"=>"attributes updated successfully"}
+    else
+      render json: {"alert"=>"attributes not updated. check params."}
+    end
+  end
 end

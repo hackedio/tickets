@@ -67,9 +67,41 @@ describe UsersController do
 
         its(:body) { should include "did not specify a valid id. no record deleted." }
       end
+  end
 
+  describe "#update" do
+    context "when updated" do
+      before { @user = create(:user) }
+      let(:update_name) { put :update, {id: @user.id, name: "something_else"}  }
+      let(:update_msisdn) { put :update, {id: @user.id, msisdn: "07711111111"}  }
+      let(:update_msisdn_and_name) { put :update, {id: @user.id, name: "another_name", msisdn:"07712121212"}  }
+
+      it "should update the status record in db" do
+        expect { update_name }.to change { User.find(@user.id).name }.to("something_else")
+        expect { update_msisdn }.to change { User.find(@user.id).msisdn }.to("447711111111")
+        update_msisdn_and_name
+        User.find(@user.id).msisdn.should eq "447712121212"
+        User.find(@user.id).name.should eq "another_name"
+      end
+      it "returns correct response" do
+        update_msisdn_and_name
+        response.body.should include "attributes updated successfully"
+      end
+    end
+
+    context "when incorrect params sent through" do
+      before { @user = create(:user) }
+      let(:no_params) { put :update, {id: @user.id, msisdn:"123"}, :format => :json }
+
+      it "should not update the status record in db" do
+        expect { no_params }.to_not change { User.find(@user.id) }
+      end
+      it "returns correct response" do
+        no_params
+        response.body.should include "attributes not updated. check params."
+      end
+    end
   end
 
   after(:all) { User.destroy_all }
-
 end

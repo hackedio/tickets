@@ -88,7 +88,7 @@ describe TicketsController do
       subject { ticket_status }
 
       it { should eq "waiting" }
-      it "should update the status record in db" do
+      it "should not update the status record in db" do
         expect { update_request }.to_not change { ticket_status }
       end
       it "returns correct response" do
