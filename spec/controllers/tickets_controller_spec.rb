@@ -58,6 +58,24 @@ describe TicketsController do
     end
   end
 
+  describe "#show" do
+    context "when correct params" do
+
+      it "should return correct response" do
+        pending # why is assigns returning nil!?!?
+        t = create(:ticket)
+        Ticket.should_receive(:find).with(t.id.to_s)
+        get :show, { id: t.id }, :format => :json
+        expect(assigns(:ticket)).to eq("something")
+      end
+    end
+
+    context "when incorrect params" do
+      it "should show empty braces"
+      # can't complete this until above test works correctly...
+    end
+  end
+
   describe "#update" do
 
     context "when not yet updated" do

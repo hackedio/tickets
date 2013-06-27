@@ -14,6 +14,16 @@ class TicketsController < ApplicationController
     end
   end
 
+  # GET /tickets/:id
+  # GET /tickets/:id.json
+  def show
+    @ticket = Ticket.find(params[:id])
+    respond_to do |format|
+      format.html
+      format.json { render json: @ticket }
+    end
+  end
+
   # POST /tickets
   # POST /tickets.json
   def create
