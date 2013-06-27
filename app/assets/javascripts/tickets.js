@@ -4,10 +4,26 @@
 $(function () {
   waitingTable();
   resolvedTable();
-  // ticketsData();
+  initializeShowView();
 });
 
-var refreshInterval = 1000;
+// var refreshInterval = 1000;
+
+// INDEX
+
+function waitingTable() {
+  var path = window.location.pathname;
+  if ( path.match('tickets[\/]?$') ){
+    ticketsData('waiting');
+  };
+}
+
+function resolvedTable() {
+  var path = window.location.pathname;
+  if ( path.match('tickets[\/]?$') ){
+    ticketsData('resolved');
+  };
+}
 
 function ticketsData(status) {
   $.getJSON('/tickets.json', function(data) {
@@ -24,7 +40,7 @@ function ticketsData(status) {
       if(val['status'] == status){
         items.push(addDataToItems(val, status));
         if (status == 'waiting') {
-          tickingTimer(new Date(val['created_at']));
+          tickingTimer(new Date(val['created_at']), '.timer-waiting');
         };
       };
     });
@@ -53,18 +69,14 @@ function addDataToItems(item, status) {
           </tr>'
 }
 
-function waitingTable() {
-  ticketsData('waiting');
-}
-
-function resolvedTable() {
-  ticketsData('resolved');
-}
-
-function tickingTimer(dateThen) {
-  var start = new Date;
-
+function tickingTimer(dateThen, element) {
   setInterval(function() {
+    var formattedTime = getFormattedTime(dateThen);
+    $(element).html(formattedTime);
+  }, 1000);
+}
+
+function getFormattedTime(dateThen){
     var dateNow = new Date();
     var sumDate = dateNow - dateThen;
     date = new Date(sumDate);
@@ -72,7 +84,23 @@ function tickingTimer(dateThen) {
     var minutes = date.getMinutes();
     var seconds = date.getSeconds();
     var formattedTime = hours + 'h ' + minutes + 'm ' + seconds + 's';
-
-    $('.timer-waiting').html(formattedTime);
-  }, 1000);
+    return formattedTime;
 }
+
+// SHOW
+
+function initializeShowView() {
+  var path = window.location.pathname;
+  // if url is for tickets/:id
+  if ( path.match('tickets\/[0-9]+$') ){
+    $.getJSON(path+'.json', function(data){
+      if(data['status'] != 'resolved'){
+        date = new Date(data['created_at']);
+        tickingTimer(date, '#waiting_for');
+      }else{
+        $('#waiting_for').html('0');
+      };
+    });
+  };
+}
+
