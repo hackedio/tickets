@@ -13,14 +13,14 @@ $(function () {
 
 function waitingTable() {
   var path = window.location.pathname;
-  if ( path.match('tickets[\/]?$') ){
+  if ( path.match('tickets\/?$|^\/?$') ){
     ticketsData('waiting');
   };
 }
 
 function resolvedTable() {
   var path = window.location.pathname;
-  if ( path.match('tickets[\/]?$') ){
+  if ( path.match('tickets\/?$|^\/?$') ){
     ticketsData('resolved');
   };
 }
