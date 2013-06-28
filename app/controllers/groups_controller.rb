@@ -2,9 +2,12 @@ class GroupsController < ApplicationController
   # GET /groups
   # GET /groups.json
   def index
-    groups = Group.all
+    @groups = Group.all
 
-    render json: groups
+    respond_to do |format|
+      format.html
+      format.json { render json: @groups }
+    end
   end
 
   # GET /groups:id

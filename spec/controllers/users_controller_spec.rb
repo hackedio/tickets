@@ -1,10 +1,13 @@
 require 'spec_helper'
 
 describe UsersController do
-  before(:all) { 3.times { create(:user) } }
+  before(:all) do
+    @group = create(:group)
+    create(:user, group_id:@group.id)
+  end
 
   describe "#index" do
-    before { get :index, :format => :json }
+    before { get :index, { group_id:@group.id } }
     let(:body) { JSON.parse(response.body) }
 
     its(:status) { should be 200 }
@@ -17,7 +20,7 @@ describe UsersController do
   describe "#create" do
     context "with correct params" do
       let(:request_to_create_user) do
-        post :create, {new_user:{name:"John",msisdn:"07712345678",group_id: 1}}, :format => :json
+        post :create, { group_id: @group.id, name:"John",msisdn:"07712345678" }
       end
 
       it "creates new user" do
@@ -31,25 +34,29 @@ describe UsersController do
     end
 
     context "without correct params" do
-      before { post :create, {}, :format => :json }
+      before { post :create, {group_id:@group.id} }
 
       subject { response }
 
-      its(:body) { should include "user was not created. check your params." }
+      its(:body) { should include "User was not created. Check your msisdn is valid." }
     end
   end
 
   describe "#destroy" do
-      before { @user = create(:user) }
+      before do
+        @group2 = create(:group)
+        @user = create(:user, group_id:@group2.id)
+      end
 
       it "should delete user" do
-        expect{ delete :destroy, {id:@user.id} }.to change{ User.count }.by(-1)
+        expect{ delete :destroy, {group_id:@group2.id, id:@user.id} }.to change{ User.count }.by(-1)
       end
 
       context "when request correct" do
         before do
-          @user = create(:user)
-          delete :destroy, {id:@user.id}
+          @group2 = create(:group)
+          @user = create(:user, group_id:@group2.id)
+          delete :destroy, {group_id:@group2.id,id:@user.id}
         end
 
         subject { response }
@@ -59,8 +66,7 @@ describe UsersController do
 
       context "when request not correct" do
         before do
-          @user = create(:user)
-          delete :destroy, {id:-1}
+          delete :destroy, {group_id:-1, id:-1}
         end
 
         subject { response }
@@ -71,10 +77,13 @@ describe UsersController do
 
   describe "#update" do
     context "when updated" do
-      before { @user = create(:user) }
-      let(:update_name) { put :update, {id: @user.id, name: "something_else"}  }
-      let(:update_msisdn) { put :update, {id: @user.id, msisdn: "07711111111"}  }
-      let(:update_msisdn_and_name) { put :update, {id: @user.id, name: "another_name", msisdn:"07712121212"}  }
+      before do
+        @group = create(:group)
+        @user = create(:user, group_id: @group.id)
+      end
+      let(:update_name) { put :update, {group_id: @group.id, id: @user.id, name: "something_else"}  }
+      let(:update_msisdn) { put :update, {group_id: @group.id, id: @user.id, msisdn: "07711111111"}  }
+      let(:update_msisdn_and_name) { put :update, {group_id: @group.id, id: @user.id, name: "another_name", msisdn:"07712121212"}  }
 
       it "should update the status record in db" do
         expect { update_name }.to change { User.find(@user.id).name }.to("something_else")
@@ -90,8 +99,11 @@ describe UsersController do
     end
 
     context "when incorrect params sent through" do
-      before { @user = create(:user) }
-      let(:no_params) { put :update, {id: @user.id, msisdn:"123"}, :format => :json }
+      before do
+        @group = create(:group)
+        @user = create(:user, group_id: @group.id)
+      end
+      let(:no_params) { put :update, {group_id: @group.id, id: @user.id, msisdn:"123"} }
 
       it "should not update the status record in db" do
         expect { no_params }.to_not change { User.find(@user.id) }
@@ -100,6 +112,13 @@ describe UsersController do
         no_params
         response.body.should include "attributes not updated. check params."
       end
+    end
+
+    context "when record not found" do
+      before { put :update, {group_id: -1, id: -1, name: "another_name", msisdn:"07712121212"} }
+      subject { response }
+
+      its(:body) { should include "record does not exist. check id." }
     end
   end
 

@@ -3,20 +3,31 @@ class UsersController < ApplicationController
   # GET /users
   # GET /users.json
   def index
-    users = User.all
+    begin
+      group = Group.find(params[:group_id])
+      members = group.members
+    rescue ActiveRecord::RecordNotFound
+      members = nil
+    end
 
-    render json: users
+    render json: members || {"alert"=>"group does not exist"}
   end
 
   # POST /users
   # POST /users.json
   def create
-    new_user = User.new(params[:new_user])
+    begin
+      group = Group.find(params[:group_id])
+      new_user = group.members.new(name:params[:name],
+                                   msisdn:params[:msisdn])
+    rescue ActiveRecord::RecordNotFound
+      new_user = nil
+    end
 
-    if new_user.save
+    if new_user and new_user.save
       render json: {"notice"=>"new user created successfully."}
     else
-      render json: {"alert"=>"user was not created. check your params."}
+      render json: {"alert"=>"User was not created. Check your msisdn is valid."}
     end
   end
 
@@ -24,7 +35,8 @@ class UsersController < ApplicationController
   # DELETE /users/:id.json
   def destroy
     begin
-      user = User.find(params[:id])
+      group = Group.find(params[:group_id])
+      user = group.members.find(params[:id])
       user.destroy
       render json: { "notice"=>"user deleted successfully" }
     rescue ActiveRecord::RecordNotFound
@@ -35,14 +47,19 @@ class UsersController < ApplicationController
   # PUT /users/:id
   # PUT /users/:id.json
   def update
-    user = User.find(params[:id])
-    name = params[:name] || user.name
-    msisdn = params[:msisdn] || user.msisdn
+    begin
+      group = Group.find(params[:group_id])
+      user = group.members.find(params[:id])
+      name = params[:name] || user.name
+      msisdn = params[:msisdn] || user.msisdn
 
-    if user.update_attributes(name:name, msisdn:msisdn)
-      render json: {"notice"=>"attributes updated successfully"}
-    else
-      render json: {"alert"=>"attributes not updated. check params."}
+      if user.update_attributes(name:name, msisdn:msisdn)
+        render json: {"notice"=>"attributes updated successfully"}
+      else
+        render json: {"alert"=>"attributes not updated. check params."}
+      end
+    rescue ActiveRecord::RecordNotFound
+      render json: {"alert"=>"record does not exist. check id."}
     end
   end
 end
