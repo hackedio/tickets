@@ -25,3 +25,8 @@ end
 group :test do
   gem 'factory_girl_rails'
 end
+
+group :production do
+  # pg for heroku
+  gem "pg"
+end
