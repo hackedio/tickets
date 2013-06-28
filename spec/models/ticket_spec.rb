@@ -75,7 +75,7 @@ describe Ticket do
 
   context "after create" do
     it "should send a text message to all members of group" do
-      
+      pending
     end
   end
 

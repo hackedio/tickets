@@ -4,7 +4,7 @@ class Ticket < ActiveRecord::Base
   belongs_to :group
 
   before_create :increment_ticket_no
-  # after_create :send_sms_to_group
+  after_create :send_sms_to_group unless Rails.env == 'test'
 
   validates :seat, :description, :group_id, :presence => true, allow_blank: false
   validate :valid_msisdn
@@ -35,9 +35,11 @@ class Ticket < ActiveRecord::Base
     client = Twilio::REST::Client.new(account_sid, auth_token)
 
     account = client.account
-    self.ticket.group.members
-    message = account.sms.messages.create({:from => '+442033222431', :to => '447812454885', :body => 'Hey, this working?'})
-    message2 = account.sms.messages.create({:from => '+442033222431', :to => '447718188620', :body => 'Hey, this working?'})
-    puts message
+    self.group.members.each do |member|
+      link = "http://www.example.com/tickets/#{self.id}"
+      msg = account.sms.messages.create({:from => ENV['TWILIO_HACKED_NO'], :to => member.msisdn, :body => "##{self.ticket_no} - #{self.seat} - #{link}"})
+      puts "sent sms to #{member.name}"
+      puts "response -> #{msg}"
+    end
   end
 end
