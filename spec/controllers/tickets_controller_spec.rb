@@ -34,7 +34,7 @@ describe TicketsController do
       it { should_not render_template("index") }
       specify { body.should be_kind_of Array }
       specify { body.sample.should be_kind_of Hash }
-      specify { body.sample.should include("id","msisdn","seat","status","ticket_no","description") }
+      specify { body.sample.should include("id","name","seat","status","ticket_no","description") }
 
       context "with status param set to 'waiting'" do
         before { get :index, { status: "waiting", :format => :json } }
@@ -118,13 +118,13 @@ describe TicketsController do
 
   describe "#create" do
     let(:valid_attributes) do
-      { new_ticket: { msisdn: "07712345678",
+      { new_ticket: { name: "John Smith",
                       seat: "4B",
                       description: "Help with Heroku!?",
                       group_id: "1"} }
     end
-    let(:invalid_msisdn) do
-      { new_ticket: { msisdn: "0771234567",
+    let(:blank_name) do
+      { new_ticket: { name: "",
                       seat: "4B",
                       description: "Help with Heroku!?",
                       group_id: "1"} }
@@ -150,9 +150,9 @@ describe TicketsController do
       end
     end
 
-    context "when request sent with invalid msisdn" do
+    context "when request sent with blank name" do
       let(:create_new_ticket) do
-        post :create, invalid_msisdn, :format => :json
+        post :create, blank_name, :format => :json
       end
       it "should not create new ticket record" do
         expect { create_new_ticket }.to_not change { Ticket.count }
@@ -169,7 +169,7 @@ describe TicketsController do
       end
 
       context "with error" do
-        before { post :create, invalid_msisdn, :format => :json }
+        before { post :create, blank_name, :format => :json }
 
         subject { response }
 

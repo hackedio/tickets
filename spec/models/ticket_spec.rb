@@ -30,7 +30,7 @@ describe Ticket do
 
     it "raises a RecordInvalid error if all fields are blank" do
       expect do
-        create(:ticket, msisdn:"", seat:"", description:"")
+        create(:ticket, name:"", seat:"", description:"")
       end.to raise_error ActiveRecord::RecordInvalid
     end
 
@@ -40,28 +40,8 @@ describe Ticket do
       end
     end
 
-    context "with invalid msisdn field" do
-      it "raises error if msisdn field is blank" do
-        expect { create(:ticket, msisdn: "") }.to raise_error ActiveRecord::RecordInvalid
-      end
-
-      it "raises error if msisdn is too few characters" do
-        expect { create(:ticket, msisdn: "44781234567") }.to raise_error ActiveRecord::RecordInvalid
-      end
-
-      it "raises error if msisdn is too many characters" do
-        expect { create(:ticket, msisdn: "4478123456789") }.to raise_error ActiveRecord::RecordInvalid
-      end
-
-      it "raises error if msisdn is wrong type of characters" do
-        expect { create(:ticket, msisdn: "12345678910") }.to raise_error ActiveRecord::RecordInvalid
-        expect { create(:ticket, msisdn: "wrongcharacters") }.to raise_error ActiveRecord::RecordInvalid
-      end
-    end
-
-    context "with valid msisdn field starting with 0" do
-      subject { create(:ticket, msisdn: "07812345678") }
-      its(:msisdn) { should eq "447812345678" }
+    it "raises error if name field is blank" do
+      expect { create(:ticket, name: "") }.to raise_error ActiveRecord::RecordInvalid
     end
 
     it "raises a RecordInvalid error if seat field is blank" do

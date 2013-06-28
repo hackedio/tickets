@@ -5,7 +5,7 @@ describe Group do
   context "when associating tickets" do
     before(:all) { create(:group) }
 
-    let(:group_assigned_ticket) { Group.first.tickets.build( { msisdn: "07712345678",
+    let(:group_assigned_ticket) { Group.first.tickets.build( { name: "John Doe",
                                                                seat: "4B",
                                                                description: "Help with Heroku!?" } ) }
 
