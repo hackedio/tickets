@@ -22,8 +22,8 @@ class Ticket < ActiveRecord::Base
 
     account = client.account
     self.group.members.each do |member|
-      link = "http://www.example.com/tickets/#{self.id}"
-      msg = account.sms.messages.create({:from => ENV['TWILIO_HACKED_NO'], :to => member.msisdn, :body => "##{self.ticket_no} - #{self.seat} - #{link}"})
+      link = "#{ENV['HACKED_HELP_TICKET_URL']}/tickets/#{self.id}"
+      msg = account.sms.messages.create({:from => ENV['TWILIO_HACKED_NO'], :to => member.msisdn, :body => "\##{self.ticket_no} - #{self.name} - #{self.seat} - #{link}"})
       puts "sent sms to #{member.name}"
       puts "response -> #{msg}"
     end
