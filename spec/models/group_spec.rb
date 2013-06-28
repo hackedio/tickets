@@ -17,7 +17,7 @@ describe Group do
   context "when associating users" do
     before(:all) { create(:group) }
 
-    let(:group_assigned_users) { Group.first.users.build( { name:"john", msisdn:"07812345678" } ) }
+    let(:group_assigned_users) { Group.first.members.build( { name:"john", msisdn:"07812345678" } ) }
 
     subject { group_assigned_users }
 

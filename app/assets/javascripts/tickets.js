@@ -30,17 +30,20 @@ function ticketsData(status) {
     var items = [];
      
     items.push('<tr> \
-                <th>id</th><th>ticket no</th><th>seat</th> \
-                <th>description</th><th>waiting for ...</th> \
-                <th></th> \
+                <th>ticket no</th><th>seat</th> \
+                <th>description</th><th>Group</th> \
+                <th>waiting for ...</th><th></th> \
                 </tr>'
     );
 
     $.each(data, function(key, val) {
+
       if(val['status'] == status){
         items.push(addDataToItems(val, status));
         if (status == 'waiting') {
-          tickingTimer(new Date(val['created_at']), '.timer-waiting');
+          var date = new Date(val['created_at']);
+          var element = '.timer-waiting'+val['id'];
+          tickingTimer(date, element);  
         };
       };
     });
@@ -53,21 +56,31 @@ function ticketsData(status) {
 }
 
 function addDataToItems(item, status) {
-  var timer = "timer-"+status
+  var timer = "timer-"+status+item['id'];
 
   var goToButton = "<a href='/tickets/"+item['id']+"'> \
                       <button class='btn btn-success'>Go To</button> \
                     </a>"
 
   return '<tr> \
-          <td>' + item['id'] + '</td> \
           <td>' + item['ticket_no'] + '</td> \
           <td>' + item['seat'] + '</td> \
           <td>' + item['description'].substring(0,15) + '...</td> \
+          <td>' + "" + '</td> \
           <td class='+timer+'>0</td> \
           <td>'+goToButton+'</td> \
           </tr>'
 }
+
+// function groupName(id){
+//   var group = $.getJSON('/groups/'+id);
+//   if (group.status == 200){
+//     var groupname = group.responseJSON['name'];
+//   }else{
+//     var groupname = "No group assigned";
+//   };
+//   return groupname;
+// }
 
 function tickingTimer(dateThen, element) {
   setInterval(function() {
@@ -79,7 +92,7 @@ function tickingTimer(dateThen, element) {
 function getFormattedTime(dateThen){
     var dateNow = new Date();
     var sumDate = dateNow - dateThen;
-    date = new Date(sumDate);
+    var date = new Date(sumDate);
     var hours = date.getHours();
     var minutes = date.getMinutes();
     var seconds = date.getSeconds();
@@ -93,14 +106,35 @@ function initializeShowView() {
   var path = window.location.pathname;
   // if url is for tickets/:id
   if ( path.match('tickets\/[0-9]+$') ){
-    $.getJSON(path+'.json', function(data){
-      if(data['status'] != 'resolved'){
-        date = new Date(data['created_at']);
-        tickingTimer(date, '#waiting_for');
-      }else{
-        $('#waiting_for').html('0');
-      };
-    });
+    displaySingleTicketData(path);
+    initializeResolvedButton(path);
   };
 }
 
+function displaySingleTicketData(path) {
+  $.getJSON(path+'.json', function(data){
+    if(data['status'] != 'resolved'){
+      date = new Date(data['created_at']);
+      tickingTimer(date, '#waiting_for');
+    }else{
+      $('#waiting_for').html('0');
+    };
+  });
+}
+
+function initializeResolvedButton(path) {
+  $('#resolved-button').click(function(){
+    setTicketToResolved(path);
+  });
+}
+
+function setTicketToResolved(path) {
+  $.ajax({
+    type: 'PUT',
+    url: path,
+    data: 'status=resolved',
+    success: function(response) {
+      $('#ticket-data').html(response['notice']);
+    }
+  });
+}

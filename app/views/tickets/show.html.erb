@@ -1,20 +1,29 @@
 <h1>Ticket #<%= @ticket.ticket_no %></h1>
 
-<dl>
-  <dt>ID</dt>
-    <dd><%= @ticket.id %></dd>
-  <dt>Seat</dt>
-    <dd><%= @ticket.seat %></dd>
-  <dt>Waiting for:</dt>
-    <dd id="waiting_for"></dd>
-  <dt>Assigned to group:</dt>
-    <% if @ticket.group %>
-      <dd><%= @ticket.group.name %></dd>
-    <% else %>
-      <dd>No group asigned!</dd>
-    <% end %>
-  <dt>Status</dt>
-    <dd><%= @ticket.status %></dd>
-  <dt>Description of problem:</dt>
-    <dd><%= @ticket.description %></dd>
-</dl>
+<div id="ticket-data">
+  <dl>
+    <dt>ID</dt>
+      <dd><%= @ticket.id %></dd>
+    <dt>Seat</dt>
+      <dd><%= @ticket.seat %></dd>
+    <dt>Waiting for:</dt>
+      <dd id="waiting_for"></dd>
+    <dt>Assigned to group:</dt>
+      <% if @ticket.group %>
+        <dd><%= @ticket.group.name %></dd>
+      <% else %>
+        <dd>No group assigned!</dd>
+      <% end %>
+    <dt>Status</dt>
+      <dd><%= @ticket.status %></dd>
+    <dt>Description of problem:</dt>
+      <dd><%= @ticket.description %></dd>
+  </dl>
+
+  <br />
+  
+  <% unless @ticket.status == 'resolved' %>
+    <button id="resolved-button" class="btn btn-success">Issue Resolved</button>
+  <% end %>
+
+</div>

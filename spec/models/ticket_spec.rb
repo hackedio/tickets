@@ -73,5 +73,11 @@ describe Ticket do
     end
   end
 
+  context "after create" do
+    it "should send a text message to all members of group" do
+      
+    end
+  end
+
   after(:all) { Ticket.destroy_all }
 end

@@ -7,6 +7,14 @@ class GroupsController < ApplicationController
     render json: groups
   end
 
+  # GET /groups:id
+  # GET /groups/:id.json
+  def show
+    group = Group.find(params[:id])
+
+    render json: group
+  end
+
   # POST /groups
   # POST /groups.json
   def create
