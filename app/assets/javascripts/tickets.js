@@ -72,16 +72,6 @@ function addDataToItems(item, status) {
           </tr>'
 }
 
-// function groupName(id){
-//   var group = $.getJSON('/groups/'+id);
-//   if (group.status == 200){
-//     var groupname = group.responseJSON['name'];
-//   }else{
-//     var groupname = "No group assigned";
-//   };
-//   return groupname;
-// }
-
 function tickingTimer(dateThen, element) {
   setInterval(function() {
     var formattedTime = getFormattedTime(dateThen);

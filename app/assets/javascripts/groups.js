@@ -127,6 +127,7 @@ function initializeDeleteMemberButton() {
     if (r==true){
       deleteGroupMember(memberid, groupid);
     };
+    return false;
   });
 }
 
