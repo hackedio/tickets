@@ -44,9 +44,7 @@ function addNewGroupToDB() {
   $.post('/groups?name='+name);
   $('#collapseOne').collapse('hide');
   $('#group_name').val('');
-  $('#all_groups').load('/groups #all_groups', function(){
-    reloadGroupsCallback();
-  });
+  reloadGroups();
 }
 
 function initializeAccordionText(){
@@ -76,11 +74,17 @@ function deleteGroup(groupid){
     type: 'DELETE',
     url: path,
     success: function(response) {
-      $('#all_groups').load('/groups #all_groups', function(){
-        reloadGroupsCallback();
-      });
+      reloadGroups();
     }
   });
+}
+
+function reloadGroups() {
+  setTimeout(function(){
+    $('#all_groups').load('/groups #all_groups', function(){
+      reloadGroupsCallback();
+    });
+  },500);
 }
 
 function reloadGroupsCallback(){
@@ -109,9 +113,7 @@ function addGroupMember(groupid){
       if (response['alert']){
         alert(response['alert']);
       }else{
-        $('#all_groups').load('/groups #all_groups', function(){
-          reloadGroupsCallback();
-        });
+        reloadGroups();
       };
     }
   });
@@ -137,9 +139,7 @@ function deleteGroupMember(memberid, groupid){
       if (response['alert']){
         alert(response['alert']);
       }else{
-        $('#all_groups').load('/groups #all_groups', function(){
-          reloadGroupsCallback();
-        });
+        reloadGroups();
       };
     }
   });
