@@ -13,8 +13,27 @@ function initializeIndexView() {
   // if path is root or /tickets...
   if ( path.match('tickets\/?$|^\/?$') ){
     setInitialTime();
-    initializeTickingTimer()
+    initializeTickingTimer();
+    loopReloadTickets();
   };
+}
+
+function loopReloadTickets() {
+  setInterval(function(){
+    reloadTickets();
+  }, 5000);
+}
+
+function reloadTickets() {
+  $('#resolved').load('/tickets #resolved');
+  $('#waiting').load('/tickets #waiting', function(){
+      reloadTicketsCallback();
+  });
+}
+
+function reloadTicketsCallback(){
+  setInitialTime();
+  initializeTickingTimer();
 }
 
 function setInitialTime() {
@@ -56,36 +75,35 @@ function getFormattedTime(dateThen){
     return formattedTime;
 }
 
-
-
-
-
-
-
-
-
-
-
 // SHOW
 
 function initializeShowView() {
   var path = window.location.pathname;
   // if url is for tickets/:id
   if ( path.match('tickets\/[0-9]+$') ){
-    displaySingleTicketData(path);
+    setInitialSingleTicketTime();
+    displaySingleTicketTimer(path);
     initializeResolvedButton(path);
   };
 }
 
-function displaySingleTicketData(path) {
-  $.getJSON(path+'.json', function(data){
-    if(data['status'] != 'resolved'){
-      date = new Date(data['created_at']);
-      tickingTimer(date, '#waiting_for');
-    }else{
-      $('#waiting_for').html('0');
-    };
-  });
+function setInitialSingleTicketTime() {
+  var status = $('#status').html();
+  if (status == 'waiting'){
+    var createdat = $('#waiting_for').data('createdat');
+    var dateThen = new Date(createdat);
+    var formattedTime = getFormattedTime(dateThen);
+    $('#waiting_for').html(formattedTime);
+  }
+}
+
+function displaySingleTicketTimer(path) {
+  var status = $('#status').html();
+  if(status == 'waiting'){
+    var createdat = $('#waiting_for').data('createdat');
+    var date = new Date(createdat);
+    tickingTimer(date, '#waiting_for');
+  };
 }
 
 function initializeResolvedButton(path) {
@@ -101,6 +119,7 @@ function setTicketToResolved(path) {
     data: 'status=resolved',
     success: function(response) {
       $('#ticket-data').html(response['notice']);
+      console.log(response);
     }
   });
 }

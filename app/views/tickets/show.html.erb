@@ -2,12 +2,12 @@
 
 <div id="ticket-data">
   <dl>
-    <dt>ID</dt>
-      <dd><%= @ticket.id %></dd>
+    <dt>Name:</dt>
+      <dd><%= @ticket.name %></dd>
     <dt>Seat</dt>
       <dd><%= @ticket.seat %></dd>
     <dt>Waiting for:</dt>
-      <dd id="waiting_for"></dd>
+      <dd id="waiting_for" data-createdat="<%= @ticket.created_at %>">0</dd>
     <dt>Assigned to group:</dt>
       <% if @ticket.group %>
         <dd><%= @ticket.group.name %></dd>
@@ -15,7 +15,7 @@
         <dd>No group assigned!</dd>
       <% end %>
     <dt>Status</dt>
-      <dd><%= @ticket.status %></dd>
+      <dd id="status"><%= @ticket.status %></dd>
     <dt>Description of problem:</dt>
       <dd><%= @ticket.description %></dd>
   </dl>
