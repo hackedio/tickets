@@ -40,7 +40,7 @@ function setInitialTime() {
   var ticketsWaiting = $('.timer-waiting');
 
   $.each(ticketsWaiting, function(key,val){
-    var createdAt = $(val).data('createdat').replace("UTC","");
+    var createdAt = $(val).data('createdat').replace("UTC","GMT");
     var dateThen = Date.parse(createdAt);
     var formattedTime = getFormattedTime(dateThen);
     $(val).html(formattedTime);
@@ -51,7 +51,7 @@ function initializeTickingTimer() {
   var ticketsWaiting = $('.timer-waiting');
 
   $.each(ticketsWaiting, function(key,val){
-    var createdAt = $(val).data('createdat').replace("UTC","");
+    var createdAt = $(val).data('createdat').replace("UTC","GMT");
     var dateThen = Date.parse(createdAt);
     tickingTimer(dateThen, val);
   });
@@ -90,7 +90,7 @@ function initializeShowView() {
 function setInitialSingleTicketTime() {
   var status = $('#status').html();
   if (status == 'waiting'){
-    var createdat = $('#waiting_for').data('createdat').replace("UTC","");
+    var createdat = $('#waiting_for').data('createdat').replace("UTC","GMT");
     var dateThen = Date.parse(createdat);
     var formattedTime = getFormattedTime(dateThen);
     $('#waiting_for').html(formattedTime);
@@ -100,7 +100,7 @@ function setInitialSingleTicketTime() {
 function displaySingleTicketTimer(path) {
   var status = $('#status').html();
   if(status == 'waiting'){
-    var createdat = $('#waiting_for').data('createdat').replace("UTC","");
+    var createdat = $('#waiting_for').data('createdat').replace("UTC","GMT");
     var date = Date.parse(createdat);
     tickingTimer(date, '#waiting_for');
   };
