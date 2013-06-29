@@ -6,6 +6,56 @@
 </ul>
 
 <div class="tab-content">
-  <div class="tab-pane active" id="waiting"></div>
-  <div class="tab-pane" id="resolved"></div>
+  <div class="tab-pane active" id="waiting">
+    <table class="table table-striped">
+      <tr>
+        <th>ticket no</th>
+        <th>seat</th>
+        <th>description</th>
+        <th>Group</th>
+        <th>waiting for ...</th>
+        <th></th>
+      </tr>
+      <% @tickets_waiting.each do |t| %>
+        <tr>
+          <td><%= t.ticket_no %></td>
+          <td><%= t.seat %></td>
+          <td><%= truncate(t.description, length: 15) %></td>
+          <td><%= t.group ? t.group.name : "none" %></td>
+          <td class=<%= "timer-waiting" %> data-createdat="<%= t.created_at %>">0</td>
+          <td>
+            <a href=<%= "/tickets/#{t.id}" %>>
+              <button class='btn btn-success'>Go To</button>
+            </a>
+          </td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+  <div class="tab-pane" id="resolved">
+    <table class="table table-striped">
+      <tr>
+        <th>ticket no</th>
+        <th>seat</th>
+        <th>description</th>
+        <th>Group</th>
+        <th>waiting for ...</th>
+        <th></th>
+      </tr>
+      <% @tickets_resolved.each do |t| %>
+        <tr>
+          <td><%= t.ticket_no %></td>
+          <td><%= t.seat %></td>
+          <td><%= truncate(t.description, length: 15) %></td>
+          <td><%= t.group ? t.group.name : "none" %></td>
+          <td class=<%= "timer-resolved" %> data-createdat=<%= t.created_at %>>0</td>
+          <td>
+            <a href=<%= "/tickets/#{t.id}" %>>
+              <button class='btn btn-success'>Go To</button>
+            </a>
+          </td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
 </div>

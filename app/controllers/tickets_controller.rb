@@ -6,6 +6,8 @@ class TicketsController < ApplicationController
       @tickets = Ticket.where(status: params[:status])
     else
       @tickets = Ticket.all
+      @tickets_waiting = Ticket.where(status:"waiting")
+      @tickets_resolved = Ticket.where(status:"resolved")
     end
 
     respond_to do |format|

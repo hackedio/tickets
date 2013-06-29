@@ -2,74 +2,40 @@
 // All this logic will automatically be available in application.js.
 
 $(function () {
-  waitingTable();
-  resolvedTable();
+  initializeIndexView()
   initializeShowView();
 });
 
-// var refreshInterval = 1000;
-
 // INDEX
 
-function waitingTable() {
+function initializeIndexView() {
   var path = window.location.pathname;
+  // if path is root or /tickets...
   if ( path.match('tickets\/?$|^\/?$') ){
-    ticketsData('waiting');
+    setInitialTime();
+    initializeTickingTimer()
   };
 }
 
-function resolvedTable() {
-  var path = window.location.pathname;
-  if ( path.match('tickets\/?$|^\/?$') ){
-    ticketsData('resolved');
-  };
-}
+function setInitialTime() {
+  var ticketsWaiting = $('.timer-waiting');
 
-function ticketsData(status) {
-  $.getJSON('/tickets.json', function(data) {
-    var items = [];
-     
-    items.push('<tr> \
-                <th>ticket no</th><th>seat</th> \
-                <th>description</th><th>Group</th> \
-                <th>waiting for ...</th><th></th> \
-                </tr>'
-    );
-
-    $.each(data, function(key, val) {
-
-      if(val['status'] == status){
-        items.push(addDataToItems(val, status));
-        if (status == 'waiting') {
-          var date = new Date(val['created_at']);
-          var element = '.timer-waiting'+val['id'];
-          tickingTimer(date, element);  
-        };
-      };
-    });
-   
-    $('<table/>', {
-      'class': 'table table-striped',
-      html: items.join('')
-    }).appendTo('#'+status);
+  $.each(ticketsWaiting, function(key,val){
+    var createdAt = $(val).data('createdat');
+    var dateThen = new Date(createdAt);
+    var formattedTime = getFormattedTime(dateThen);
+    $(val).html(formattedTime);
   });
 }
 
-function addDataToItems(item, status) {
-  var timer = "timer-"+status+item['id'];
+function initializeTickingTimer() {
+  var ticketsWaiting = $('.timer-waiting');
 
-  var goToButton = "<a href='/tickets/"+item['id']+"'> \
-                      <button class='btn btn-success'>Go To</button> \
-                    </a>"
-
-  return '<tr> \
-          <td>' + item['ticket_no'] + '</td> \
-          <td>' + item['seat'] + '</td> \
-          <td>' + item['description'].substring(0,15) + '...</td> \
-          <td>' + "" + '</td> \
-          <td class='+timer+'>0</td> \
-          <td>'+goToButton+'</td> \
-          </tr>'
+  $.each(ticketsWaiting, function(key,val){
+    var createdAt = $(val).data('createdat');
+    var dateThen = new Date(createdAt);
+    tickingTimer(dateThen, val);
+  });
 }
 
 function tickingTimer(dateThen, element) {
@@ -89,6 +55,16 @@ function getFormattedTime(dateThen){
     var formattedTime = hours + 'h ' + minutes + 'm ' + seconds + 's';
     return formattedTime;
 }
+
+
+
+
+
+
+
+
+
+
 
 // SHOW
 
