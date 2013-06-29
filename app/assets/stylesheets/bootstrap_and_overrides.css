@@ -43,3 +43,11 @@ form{
 .member{
   margin-left:20px;
 }
+
+.delete_member{
+  color: #f00;
+}
+
+.delete_member:hover{
+  color: #f00;
+}

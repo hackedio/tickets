@@ -6,7 +6,9 @@ $(function(){
   initializeAccordionText();
   initializeDeleteGroupButtons();
   initializeAddMemberButtons();
-  clickEnterToSubmit();
+  clickEnterToSubmitGroup();
+  clickEnterToSubmitMember();
+  initializeDeleteMemberButton();
 });
 
 function initializeAddGroupButton(){
@@ -15,10 +17,24 @@ function initializeAddGroupButton(){
   });
 }
 
-function clickEnterToSubmit() {
+function clickEnterToSubmitGroup() {
   $('#group_name').keypress(function(e) {
     if(e.which == 13) {
       $('#add_group').click();
+    };
+  });
+}
+
+function clickEnterToSubmitMember() {
+  initEnterInInputField('.membername_input');
+  initEnterInInputField('.membermsisdn_input');
+}
+
+function initEnterInInputField(element){
+  $(element).keypress(function(e) {
+    var groupid = $(this).parent().data('groupid');
+    if(e.which == 13) {
+      $('#addmember'+groupid).click();
     };
   });
 }
@@ -70,6 +86,8 @@ function deleteGroup(groupid){
 function reloadGroupsCallback(){
   initializeDeleteGroupButtons();
   initializeAddMemberButtons();
+  initializeDeleteMemberButton();
+  clickEnterToSubmitMember()
 }
 
 function initializeAddMemberButtons(){
@@ -99,4 +117,30 @@ function addGroupMember(groupid){
   });
 }
 
+function initializeDeleteMemberButton() {
+  $('.delete_member').click(function(){
+    var groupid = $(this).data('groupid');
+    var memberid = $(this).data('memberid');
+    var r = confirm("Are you sure you want to delete this member?");
+    if (r==true){
+      deleteGroupMember(memberid, groupid);
+    };
+  });
+}
 
+function deleteGroupMember(memberid, groupid){
+  var path = '/groups/'+groupid+'/users/'+memberid
+  $.ajax({
+    type: 'DELETE',
+    url: path,
+    success: function(response) {
+      if (response['alert']){
+        alert(response['alert']);
+      }else{
+        $('#all_groups').load('/groups #all_groups', function(){
+          reloadGroupsCallback();
+        });
+      };
+    }
+  });
+}

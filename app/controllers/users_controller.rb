@@ -1,7 +1,6 @@
 class UsersController < ApplicationController
 
-  # GET /users
-  # GET /users.json
+  # GET /groups/:group_id/users
   def index
     begin
       group = Group.find(params[:group_id])
@@ -13,8 +12,7 @@ class UsersController < ApplicationController
     render json: members || {"alert"=>"group does not exist"}
   end
 
-  # POST /users
-  # POST /users.json
+  # POST /groups/:group_id/users
   def create
     begin
       group = Group.find(params[:group_id])
@@ -31,8 +29,7 @@ class UsersController < ApplicationController
     end
   end
 
-  # DELETE /users/:id
-  # DELETE /users/:id.json
+  # DELETE /groups/:group_id/users/:id
   def destroy
     begin
       group = Group.find(params[:group_id])
@@ -44,8 +41,7 @@ class UsersController < ApplicationController
     end
   end
 
-  # PUT /users/:id
-  # PUT /users/:id.json
+  # PUT /groups/:group_id/users/:id
   def update
     begin
       group = Group.find(params[:group_id])

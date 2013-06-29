@@ -25,14 +25,14 @@
       <a class="dropdown-toggle" data-toggle="dropdown" id="group_dropdown" href="#">&#9660;</a>
       <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
         <strong>Add New Member</strong>
-        <form>
+        <form data-groupid=<%= group.id %>>
           Name:<br />
-            <input type="text" id="member_name<%= group.id %>" /><br />
+            <input type="text" id="member_name<%= group.id %>" class="membername_input" /><br />
           Mobile Number:<br />
-            <input type="text" id="msisdn<%= group.id %>" /><br />
+            <input type="text" id="msisdn<%= group.id %>" class="membermsisdn_input" /><br />
         </form>
           <div id="add_member_div">
-            <button class="btn btn-success add_group_member" data-groupid=<%= group.id %>>Add Member</button>
+            <button class="btn btn-success add_group_member" id="addmember<%= group.id %>" data-groupid=<%= group.id %>>Add Member</button>
           </div>
         <div id="delete_group_div">
           <button class="btn btn-danger delete_group" data-groupid=<%= group.id %>>Delete Group</button>
@@ -42,7 +42,7 @@
     <strong><%= group.name %></strong><br />
 
         <% group.members.each do |member| %>
-          <p class="member"><%= member.name %></p>
+          <p class="member"><%= member.name %> <a class="delete_member" data-groupid=<%= group.id %> data-memberid=<%= member.id %> href="#deletemember">×</a></p>
         <% end %><br />
   <% end %>
 
