@@ -4,5 +4,5 @@ class Group < ActiveRecord::Base
   validates :name, :presence => true, allow_blank: false
 
   has_many :tickets
-  has_many :members, :class_name => "User"
+  has_many :members, :class_name => "User", :dependent => :destroy
 end
