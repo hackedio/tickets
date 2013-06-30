@@ -15,6 +15,10 @@ A system to allow attendees to raise tickets for help during the event
 * The "value" of each radio button should represent the group that deals with that kind of issue... e.g. "THUNDER", "HEROES" etc... 
 * __NOTE: the above point is important as a ticket will not be created unless a correct group name is sent through. Make sure that the group exists before setting a radio button value as the name of that group.__
 
+####Viewing all tickets
+* Go to _/tickets_ to view all tickets.
+* Click the "waiting" tab to see all tickets that are waiting to be resolved.
+* Click the "resolved" tab to view all old tickets that have already been resolved.
 
 ###Environment Variables:
 
