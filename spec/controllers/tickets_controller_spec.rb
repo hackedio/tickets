@@ -117,22 +117,25 @@ describe TicketsController do
   end
 
   describe "#create" do
+    before(:all) do
+      create(:group, name:"THUNDER")
+    end
     let(:valid_attributes) do
-      { new_ticket: { name: "John Smith",
-                      seat: "4B",
-                      description: "Help with Heroku!?",
-                      group_id: "1"} }
+      { name: "John Smith",
+        seat: "4B",
+        desc: "Help with Heroku!?",
+        group: "THUNDER" }
     end
     let(:blank_name) do
-      { new_ticket: { name: "",
-                      seat: "4B",
-                      description: "Help with Heroku!?",
-                      group_id: "1"} }
+      { name: "",
+        seat: "4B",
+        desc: "Help with Heroku!?",
+        group: "THUNDER"}
     end
 
     context "when request sent with correct data" do
       let(:create_new_ticket) do
-        post :create, valid_attributes, :format => :json
+        post :create, valid_attributes
       end
       it "should create new ticket record" do
         expect { create_new_ticket }.to change { Ticket.count }.by(1)
@@ -143,7 +146,7 @@ describe TicketsController do
 
     context "when request sent with missing data" do
       let(:create_new_ticket) do
-        post :create, { new_ticket: { description: "Help with Heroku!?"} }, :format => :json
+        post :create, { description: "Help with Heroku!?", group:"THUNDER"}
       end
       it "should not create new ticket record" do
         expect { create_new_ticket }.to_not change { Ticket.count }
@@ -152,7 +155,7 @@ describe TicketsController do
 
     context "when request sent with blank name" do
       let(:create_new_ticket) do
-        post :create, blank_name, :format => :json
+        post :create, blank_name
       end
       it "should not create new ticket record" do
         expect { create_new_ticket }.to_not change { Ticket.count }
