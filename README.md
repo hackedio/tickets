@@ -10,7 +10,7 @@ A system to allow attendees to raise tickets for help during the event
 
 ####Attendee form
 * Currently, there is a stub at _/get-help_. 
-* The form is urrently being submitted via AJAX. If the ticket form is to be on a separate domain, then a new solution will be required.
+* The form is currently being submitted via AJAX. If the ticket form is to be on a separate domain, then a new solution will be required.
 * The group to receive the SMS is determined by a set of radio buttons on the bottom of the form which will be selected by the attendee (e.g. software issue, hardware issue, misc.).
 * The "value" of each radio button should represent the group that deals with that kind of issue... e.g. "THUNDER", "HEROES" etc... 
 * __NOTE: the above point is important as a ticket will not be created unless a correct group name is sent through. Make sure that the group exists before setting a radio button value as the name of that group.__
