@@ -29,7 +29,13 @@ class TicketsController < ApplicationController
   # POST /tickets
   # POST /tickets.json
   def create
-    new_ticket = Ticket.new(params[:new_ticket]) # name form "new_ticket"
+    name = params[:name]
+    seat = params[:seat]
+    desc = params[:desc]
+    group_name = params[:group]
+    group = Group.where(name:group_name).first
+
+    new_ticket = group.tickets.new(name:name,seat:seat,description:desc)
 
     if new_ticket.save
       render json: {"notice"=>"new ticket created successfully."}
