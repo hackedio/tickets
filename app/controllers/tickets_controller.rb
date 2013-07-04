@@ -42,11 +42,11 @@ class TicketsController < ApplicationController
     if new_ticket.save
       notice = {"notice"=>"new ticket created successfully."}
       puts notice.to_json
-      redirect_to "http://hacked.io/almanac/get-help"
+      redirect_to "http://hacked.io/almanac/get-help/submitted"
     else
       alert = {"alert"=>"ticket was not created. check your params."}
       puts alert.to_json
-      redirect_to "http://hacked.io/almanac/get-help"
+      redirect_to "http://hacked.io/almanac/get-help/not-submitted"
     end
   end
 
