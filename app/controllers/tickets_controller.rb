@@ -1,4 +1,6 @@
 class TicketsController < ApplicationController
+  skip_before_filter :verify_authenticity_token, :only => [:create]
+
   # GET /tickets
   # GET /tickets.json
   def index
