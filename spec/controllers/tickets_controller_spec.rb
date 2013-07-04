@@ -67,6 +67,7 @@ describe TicketsController do
         Ticket.should_receive(:find).with(t.id.to_s)
         get :show, { id: t.id }, :format => :json
         expect(assigns(:ticket)).to eq("something")
+        t.destroy
       end
     end
 
@@ -86,33 +87,39 @@ describe TicketsController do
     end
 
     context "when updated" do
-      let(:update_request) { put :update, {id: @ticket.id, status: "resolved"}, :format => :json  }
+      before { @ticket2 = create(:ticket) }
+      let(:update_request) { put :update, {id: @ticket2.id, status: "resolved"}, :format => :json  }
 
-      subject { ticket_status }
+      subject { @ticket2.status }
 
       it { should eq "waiting" }
       it "should update the status record in db" do
-        expect { update_request }.to change { ticket_status }.to("resolved")
+        expect { update_request }.to change { Ticket.find(@ticket2.id).status }.to("resolved")
       end
       it "returns correct response" do
         update_request
         response.body.should include "status updated successfully to 'resolved'"
       end
+
+      after { @ticket2.destroy }
     end
 
     context "when no status param sent through" do
-      let(:update_request) { put :update, {id: @ticket.id}, :format => :json }
+      before { @ticket3 = create(:ticket) }
+      let(:update_request) { put :update, {id: @ticket3.id}, :format => :json }
 
-      subject { ticket_status }
+      subject { @ticket3.status }
 
       it { should eq "waiting" }
       it "should not update the status record in db" do
-        expect { update_request }.to_not change { ticket_status }
+        expect { update_request }.to_not change { @ticket3.status }
       end
       it "returns correct response" do
         update_request
         response.body.should include "status not updated. check params."
       end
+
+      after{ @ticket3.destroy }
     end
   end
 
@@ -141,6 +148,7 @@ describe TicketsController do
         expect { create_new_ticket }.to change { Ticket.count }.by(1)
         Ticket.last.seat.should eq "4B"
         Ticket.last.description.should eq "Help with Heroku!?"
+        Ticket.last.destroy
       end
     end
 
@@ -164,19 +172,17 @@ describe TicketsController do
 
     context "when request has completed" do
       context "without error" do
-        before { post :create, valid_attributes, :format => :json }
+        subject { post :create, valid_attributes, :format => :json }
 
-        subject { response }
+        it { should redirect_to "http://hacked.io/almanac/get-help/submitted" }
 
-        its(:body) { should include "new ticket created successfully." }
+        after { Ticket.last.destroy }
       end
 
       context "with error" do
-        before { post :create, blank_name, :format => :json }
+        subject  { post :create, blank_name, :format => :json }
 
-        subject { response }
-
-        its(:body) { should include "ticket was not created. check your params." }
+        it { should redirect_to "http://hacked.io/almanac/get-help/not-submitted" }
       end
     end
   end

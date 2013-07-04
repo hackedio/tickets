@@ -26,16 +26,17 @@ describe User do
     its(:count) { should eq 1 }
     its(:'first.id') { should eq @ticket.id}
 
-    after(:all) do
-      Group.destroy_all
-      User.destroy_all
-      Ticket.destroy_all
-    end
   end
 
   context "without group_id" do
     it "should_not be_valid" do
       expect{ create(:user, group_id: nil) }.to raise_error ActiveRecord::RecordInvalid
     end
+  end
+
+  after(:all) do
+    Group.destroy_all
+    User.destroy_all
+    Ticket.destroy_all
   end
 end

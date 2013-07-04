@@ -15,12 +15,15 @@ describe Ticket do
   end
 
   context "when creating new record" do
-    before { create(:group) }
-    before { 2.times { create(:ticket) } }
+    before do
+      create(:group)
+      @ticket1 = create(:ticket)
+      @ticket2 = create(:ticket)
+    end
 
-    subject { Ticket.last }
+    subject { @ticket2 }
 
-    its(:ticket_no) { should eq Ticket.first.ticket_no+1 }
+    its(:ticket_no) { should eq @ticket1.ticket_no+1 }
 
     its(:status) { should eq "waiting" }
 

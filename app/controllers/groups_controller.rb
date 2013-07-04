@@ -1,4 +1,6 @@
 class GroupsController < ApplicationController
+  before_filter :authenticate, :except => [:create, :destroy, :update] unless Rails.env == "test"
+
   # GET /groups
   # GET /groups.json
   def index

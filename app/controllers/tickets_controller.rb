@@ -1,5 +1,6 @@
 class TicketsController < ApplicationController
   skip_before_filter :verify_authenticity_token, :only => [:create]
+  before_filter :authenticate, :except => [:create, :update] unless Rails.env == "test"
 
   # GET /tickets
   # GET /tickets.json
