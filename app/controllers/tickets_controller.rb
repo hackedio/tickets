@@ -40,10 +40,12 @@ class TicketsController < ApplicationController
     new_ticket = group.tickets.new(name:name,seat:seat,description:desc)
 
     if new_ticket.save
-      puts {"notice"=>"new ticket created successfully."}.to_json
+      notice = {"notice"=>"new ticket created successfully."}
+      puts notice.to_json
       redirect_to "http://hacked.io/almanac/get-help"
     else
-      puts {"alert"=>"ticket was not created. check your params."}.to_json
+      alert = {"alert"=>"ticket was not created. check your params."}
+      puts alert.to_json
       redirect_to "http://hacked.io/almanac/get-help"
     end
   end
